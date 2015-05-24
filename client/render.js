@@ -52,3 +52,15 @@ Meteor.startup(function () {
   });
   window.requestAnimationFrame(drawBoard);
 });
+
+Template.canvas.onRendered(function () {
+  var canvas = document.getElementById('game-canvas');
+  canvas.addEventListener('mousemove', _.throttle(function (event) {
+    var x = event.clientX * 2 / $(document).width() - 1;
+    var y = event.clientY * 2 / $(document).height() - 1;
+
+    if (OurPlayerId) {
+      Meteor.call('setPlayerCursor', OurPlayerId, x, y);
+    }
+  }, 1000 / Configuration.player.cursorPerSecond));
+});

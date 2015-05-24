@@ -10,5 +10,14 @@ Meteor.methods({
     }
     Game.update(GameId, modify);
     return newPlayerId;
+  },
+
+  setPlayerCursor: function(playerId, x, y) {
+    var modify = {$set: {}};
+    modify['$set']['cursor.' + playerId] = {
+      x: x,
+      y: y
+    }
+    Game.update(GameId, modify);
   }
 });
