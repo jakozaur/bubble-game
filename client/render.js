@@ -38,7 +38,8 @@ function drawBoard () {
     var el = pair[1];
     ctx.fillStyle = Configuration.player.colors[el.color];
     ctx.beginPath();
-    ctx.arc(el.x, el.y, el.radius, 0, Math.PI*2, false);
+    var radius = Configuration.player.foodSizeToRadius(el.size);
+    ctx.arc(el.x, el.y, radius, 0, Math.PI*2, false);
     ctx.closePath();
     ctx.fill();
   });

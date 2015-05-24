@@ -48,7 +48,7 @@ Meteor.setInterval(function () {
       player.y = Math.min(Math.max(player.y, 0), Configuration.board.height);
     }
 
-    var eatDistance2 = Math.pow(player.radius, 2);
+    var eatDistance2 = Math.pow(Configuration.player.foodSizeToRadius(player.size), 2);
 
     // Eating food :)
     for (var i = 0; i < game.food.length; ) {
@@ -61,7 +61,6 @@ Meteor.setInterval(function () {
           game.food[i] = last;
         }
         player.size += 1;
-        player.radius = Math.sqrt(player.size * Configuration.player.foodSizeToReal) / Math.PI;
       } else {
         i++;
       }
@@ -77,10 +76,9 @@ Meteor.setInterval(function () {
       // Eat only if inside me and radius is large enough
       if (distance2 <= eatDistance2) {
         var radiusToEat =
-          players[i][1].radius * Configuration.player.bigEnoughToEat;
-        if (radiusToEat < player.radius) {
+          Configuration.player.foodSizeToRadius(players[i][1].size) * Configuration.player.bigEnoughToEat;
+        if (radiusToEat < Configuration.player.foodSizeToRadius(player.size)) {
           player.size += players[i][1].size;
-          player.radius = Math.sqrt(player.size * Configuration.player.foodSizeToReal) / Math.PI;
           var last = players.pop();
           if (i < players.length) {
             players[i] = last;
