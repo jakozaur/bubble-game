@@ -5,6 +5,7 @@ Meteor.methods({
     modify['$set']['player.' + newPlayerId] = {
       x: Configuration.board.width / 2,
       y: Configuration.board.height / 2,
+      radius: Configuration.player.initialRadius,
       size: Configuration.player.initialSize,
       color: Math.floor(Math.random() * Configuration.player.colors.length)
     }

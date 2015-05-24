@@ -48,7 +48,7 @@ Meteor.setInterval(function () {
       player.y = Math.min(Math.max(player.y, 0), Configuration.board.height);
     }
 
-    var eatDistance2 = Math.pow(player.size, 2);
+    var eatDistance2 = Math.pow(player.radius, 2);
     for (var i = 0; i < game.food.length; ) {
       var food = game.food[i];
       var distance2 = Math.pow(food.x - player.x, 2) + Math.pow(food.y - player.y, 2);
@@ -58,6 +58,7 @@ Meteor.setInterval(function () {
           game.food[i] = last;
         }
         player.size += 1;
+        player.radius = Math.sqrt(player.size);
       } else {
         i++;
       }

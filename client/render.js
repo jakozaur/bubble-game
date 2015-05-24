@@ -17,16 +17,14 @@ function drawBoard () {
     return; // browser doesn't support drawing
   }
 
-  var width = 300;
-  var height = 150;
-
   var game = Game.findOne(GameId);
 
   if (!game) {
     return; // server has not create game yet
   }
 
-  ctx.clearRect(0, 0, width, height);
+  ctx.clearRect(0, 0, Configuration.board.width, Configuration.board.height);
+
   _.each(game.food, function (el) {
     ctx.fillStyle = Configuration.food.colors[el.color];
     ctx.beginPath();
@@ -40,7 +38,7 @@ function drawBoard () {
     var el = pair[1];
     ctx.fillStyle = Configuration.player.colors[el.color];
     ctx.beginPath();
-    ctx.arc(el.x, el.y, el.size, 0, Math.PI*2, false);
+    ctx.arc(el.x, el.y, el.radius, 0, Math.PI*2, false);
     ctx.closePath();
     ctx.fill();
   });
@@ -53,6 +51,8 @@ Template.canvas.onRendered(function () {
   window.requestAnimationFrame(drawBoard);
 
   var canvas = document.getElementById('game-canvas');
+  canvas.width = Configuration.board.width;
+  canvas.height = Configuration.board.height;
   canvas.addEventListener('mousemove', _.throttle(function (event) {
     if (OurPlayerId) {
       var cursorX = event.clientX * Configuration.board.width / $(document).width();
