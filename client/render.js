@@ -1,9 +1,9 @@
-function drawBoard() {
+function drawBoard () {
   window.requestAnimationFrame(drawBoard);
 
   var canvas = document.getElementById('game-canvas');
 
-  console.log("Drawing now...")
+  //console.log("Drawing now...")
 
   if (!canvas) {
     return; // <canvas> doesn't exist yet, don't do anything
@@ -18,27 +18,20 @@ function drawBoard() {
   var width = 300;
   var height = 150;
 
-  var foodRadius = 3;
+  var game = Game.findOne(GameId);
 
-  var niceColors = ['rgb(205, 0, 116)',
-    'rgb(85, 43, 114)',
-    'rgb(55, 139, 46)',
-    'rgb(170, 57, 57)',
-    'rgb(255, 219, 0)',
-    'rgb(255, 124, 0)',
-    'rgb(255, 19, 0)',
-    'rgb(10, 101, 164)']
+  if (!game) {
+    return; // server has not create game yet
+  }
 
-
-  var x = Math.round(Math.random() * width);
-  var y = Math.round(Math.random() * height);
-  ctx.fillStyle = niceColors[Math.floor(Math.random() * niceColors.length)]
-
-  ctx.beginPath();
-  ctx.arc(x, y, foodRadius, 0, Math.PI*2, false);
-  ctx.closePath();
-  ctx.fill();
-
+  ctx.clearRect(0, 0, width, height);
+  _.each(game.food, function (el) {
+    ctx.fillStyle = Configuration.food.colors[el.color];
+    ctx.beginPath();
+    ctx.arc(el.x, el.y, Configuration.food.radius, 0, Math.PI*2, false);
+    ctx.closePath();
+    ctx.fill();
+  });
 };
 
 window.requestAnimationFrame(drawBoard);
