@@ -48,6 +48,21 @@ Meteor.setInterval(function () {
       player.y = Math.min(Math.max(player.y, 0), Configuration.board.height);
     }
 
+    var eatDistance2 = Math.pow(player.size, 2);
+    for (var i = 0; i < game.food.length; ) {
+      var food = game.food[i];
+      var distance2 = Math.pow(food.x - player.x, 2) + Math.pow(food.y - player.y, 2);
+      if (distance2 <= eatDistance2) {
+        var last = game.food.pop();
+        if (i < game.food.length) {
+          game.food[i] = last;
+        }
+        player.size += 1;
+      } else {
+        i++;
+      }
+    }
+
     newPlayers[id] = player;
   });
 
