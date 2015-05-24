@@ -6,7 +6,7 @@ Meteor.methods({
       x: Configuration.board.width / 2,
       y: Configuration.board.height / 2,
       radius: Configuration.player.initialRadius,
-      size: Configuration.player.initialSize,
+      size: Configuration.player.initialFoodSize,
       color: Math.floor(Math.random() * Configuration.player.colors.length)
     }
     Game.update(GameId, modify);

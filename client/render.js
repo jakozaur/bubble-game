@@ -55,8 +55,8 @@ Template.canvas.onRendered(function () {
   canvas.height = Configuration.board.height;
   canvas.addEventListener('mousemove', _.throttle(function (event) {
     if (OurPlayerId) {
-      var cursorX = event.clientX * Configuration.board.width / $(document).width();
-      var cursorY = event.clientY * Configuration.board.height / $(document).height();
+      var cursorX = event.clientX * Configuration.board.width / $(canvas).width();
+      var cursorY = event.clientY * Configuration.board.height / $(canvas).height();
 
       Meteor.call('setPlayerCursor', OurPlayerId, cursorX, cursorY);
     }

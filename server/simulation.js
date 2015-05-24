@@ -58,7 +58,7 @@ Meteor.setInterval(function () {
           game.food[i] = last;
         }
         player.size += 1;
-        player.radius = Math.sqrt(player.size);
+        player.radius = Math.sqrt(player.size * Configuration.player.foodSizeToReal) / Math.PI;
       } else {
         i++;
       }
