@@ -46,21 +46,19 @@ function drawBoard () {
   });
 };
 
-Meteor.startup(function () {
+Template.canvas.onRendered(function () {
   Meteor.call('createNewPlayer', [], function (error, result) {
     OurPlayerId = result;
   });
   window.requestAnimationFrame(drawBoard);
-});
 
-Template.canvas.onRendered(function () {
   var canvas = document.getElementById('game-canvas');
   canvas.addEventListener('mousemove', _.throttle(function (event) {
-    var x = event.clientX * 2 / $(document).width() - 1;
-    var y = event.clientY * 2 / $(document).height() - 1;
-
     if (OurPlayerId) {
-      Meteor.call('setPlayerCursor', OurPlayerId, x, y);
+      var cursorX = event.clientX * Configuration.board.width / $(document).width();
+      var cursorY = event.clientY * Configuration.board.height / $(document).height();
+
+      Meteor.call('setPlayerCursor', OurPlayerId, cursorX, cursorY);
     }
   }, 1000 / Configuration.player.cursorPerSecond));
 });

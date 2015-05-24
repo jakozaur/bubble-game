@@ -14,7 +14,8 @@ Meteor.setInterval(function () {
   var lastNewFood = game.lastNewFood;
   var now = Date.now();
 
-  if ((now - game.lastNewFood) >= 1000 / Configuration.food.newPerSecond) {
+  if ((now - game.lastNewFood) >= 1000 / Configuration.food.newPerSecond &&
+      game.food.length < Configuration.food.maximumItems) {
     // Add new food
     var foodRadius = Configuration.food.radius;
     var x = Math.round(foodRadius +
@@ -29,15 +30,25 @@ Meteor.setInterval(function () {
   var newPlayers = {};
   _.each(_.pairs(game.player), function (pair) {
     var id = pair[0];
-    var el = pair[1];
+    var player = pair[1];
 
     var cursor = game.cursor[id];
     if (cursor) {
-      el.x += cursor.x;
-      el.y += cursor.y;
+      var move = {
+        x: cursor.x - player.x,
+        y: cursor.y - player.y
+      };
+      var cursorMaxMove = Configuration.player.cursorMaxMove;
+      move.x = Math.min(Math.max(-cursorMaxMove, move.x), cursorMaxMove) / cursorMaxMove;
+      move.y = Math.min(Math.max(-cursorMaxMove, move.y), cursorMaxMove) / cursorMaxMove;
+
+      player.x += move.x;
+      player.y += move.y;
+      player.x = Math.min(Math.max(player.x, 0), Configuration.board.width);
+      player.y = Math.min(Math.max(player.y, 0), Configuration.board.height);
     }
-    
-    newPlayers[id] = el;
+
+    newPlayers[id] = player;
   });
 
   Game.update(GameId, {$set: {
