@@ -1,8 +1,11 @@
-Game.update(GameId, {$set: {
-  lastNewFood: Date.now(),
-  food: []
-}}, {
-  upsert: true
+Meteor.startup(function () {
+  Game.update(GameId, {$set: {
+    lastNewFood: Date.now(),
+    food: [],
+    player: {}
+  }}, {
+    upsert: true
+  });
 });
 
 Meteor.setInterval(function () {

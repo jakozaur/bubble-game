@@ -1,3 +1,5 @@
+OurPlayerId = null;
+
 function drawBoard () {
   window.requestAnimationFrame(drawBoard);
 
@@ -32,6 +34,21 @@ function drawBoard () {
     ctx.closePath();
     ctx.fill();
   });
+
+  _.each(_.pairs(game.player), function (pair) {
+    var id = pair[0];
+    var el = pair[1];
+    ctx.fillStyle = Configuration.player.colors[el.color];
+    ctx.beginPath();
+    ctx.arc(el.x, el.y, el.size, 0, Math.PI*2, false);
+    ctx.closePath();
+    ctx.fill();
+  });
 };
 
-window.requestAnimationFrame(drawBoard);
+Meteor.startup(function () {
+  Meteor.call('createNewPlayer', [], function (error, result) {
+    OurPlayerId = result;
+  });
+  window.requestAnimationFrame(drawBoard);
+});
