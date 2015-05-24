@@ -27,10 +27,10 @@ Meteor.setInterval(function () {
     lastNewFood = now;
   }
 
-  var newPlayers = {};
-  _.each(_.pairs(game.player), function (pair) {
-    var id = pair[0];
-    var player = pair[1];
+  var players = _.pairs(game.player);
+  for (var j = 0; j < players.length; j++) {
+    var id = players[j][0];
+    var player = players[j][1];
 
     var cursor = game.cursor[id];
     if (cursor) {
@@ -49,9 +49,12 @@ Meteor.setInterval(function () {
     }
 
     var eatDistance2 = Math.pow(player.radius, 2);
+
+    // Eating food :)
     for (var i = 0; i < game.food.length; ) {
       var food = game.food[i];
-      var distance2 = Math.pow(food.x - player.x, 2) + Math.pow(food.y - player.y, 2);
+      var distance2 = Math.pow(food.x - player.x, 2) +
+        Math.pow(food.y - player.y, 2);
       if (distance2 <= eatDistance2) {
         var last = game.food.pop();
         if (i < game.food.length) {
@@ -64,13 +67,39 @@ Meteor.setInterval(function () {
       }
     }
 
-    newPlayers[id] = player;
+    // Eating players :)
+    for (var i = 0; i < players.length; i++) {
+      if (i == j) continue;
+
+      var distance2 = Math.pow(players[i][1].x - player.x, 2) +
+        Math.pow(players[i][1].y - player.y, 2);
+
+      // Eat only if inside me and radius is large enough
+      if (distance2 <= eatDistance2) {
+        var radiusToEat =
+          players[i][1].radius * Configuration.player.bigEnoughToEat;
+        if (radiusToEat < player.radius) {
+          player.size += players[i][1].size;
+          player.radius = Math.sqrt(player.size * Configuration.player.foodSizeToReal) / Math.PI;
+          var last = players.pop();
+          if (i < players.length) {
+            players[i] = last;
+            i--;
+          }
+        }
+      }
+    }
+  }
+
+  game.player = {};
+  _.each(players, function (pair) {
+    game.player[pair[0]] = pair[1];
   });
 
   Game.update(GameId, {$set: {
     food: game.food,
     lastNewFood: lastNewFood,
-    player: newPlayers
+    player: game.player
   }});
 
 }, 1000 / Configuration.simulation.framePerSeconds);
