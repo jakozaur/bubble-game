@@ -1,5 +1,3 @@
-OurPlayerId = null;
-
 function drawBoard () {
   window.requestAnimationFrame(drawBoard);
 
@@ -33,6 +31,10 @@ function drawBoard () {
     ctx.fill();
   });
 
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = '300 10px serif';
+
   _.each(_.pairs(game.player), function (pair) {
     var id = pair[0];
     var el = pair[1];
@@ -42,24 +44,24 @@ function drawBoard () {
     ctx.arc(el.x, el.y, radius, 0, Math.PI*2, false);
     ctx.closePath();
     ctx.fill();
+    ctx.fillStyle = 'rgb(0, 0, 0)';
+    ctx.fillText(el.name, el.x, el.y);
   });
 };
 
 Template.canvas.onRendered(function () {
-  Meteor.call('createNewPlayer', [], function (error, result) {
-    OurPlayerId = result;
-  });
   window.requestAnimationFrame(drawBoard);
 
   var canvas = document.getElementById('game-canvas');
   canvas.width = Configuration.board.width;
   canvas.height = Configuration.board.height;
   canvas.addEventListener('mousemove', _.throttle(function (event) {
-    if (OurPlayerId) {
+    var ourPlayerId = Session.get('OurPlayerId');
+    if (ourPlayerId) {
       var cursorX = event.clientX * Configuration.board.width / $(canvas).width();
       var cursorY = event.clientY * Configuration.board.height / $(canvas).height();
 
-      Meteor.call('setPlayerCursor', OurPlayerId, cursorX, cursorY);
+      Meteor.call('setPlayerCursor', ourPlayerId, cursorX, cursorY);
     }
   }, 1000 / Configuration.player.cursorPerSecond));
 });

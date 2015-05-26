@@ -1,10 +1,11 @@
 Meteor.methods({
-  createNewPlayer: function () {
+  createNewPlayer: function (name) {
     var newPlayerId = Random.hexString(23);
     var modify = {$set: {}};
     modify['$set']['player.' + newPlayerId] = {
       x: Configuration.board.width / 2,
       y: Configuration.board.height / 2,
+      name: name,
       size: Configuration.player.initialFoodSize,
       color: Math.floor(Math.random() * Configuration.player.colors.length)
     }
