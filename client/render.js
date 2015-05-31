@@ -55,7 +55,7 @@ Template.canvas.onRendered(function () {
   var canvas = document.getElementById('game-canvas');
   canvas.width = Configuration.board.width;
   canvas.height = Configuration.board.height;
-  canvas.addEventListener('mousemove', _.throttle(function (event) {
+  var handleCursor = _.throttle(function (event) {
     var ourPlayerId = Session.get('OurPlayerId');
     if (ourPlayerId) {
       var cursorX = event.clientX * Configuration.board.width / $(canvas).width();
@@ -63,5 +63,23 @@ Template.canvas.onRendered(function () {
 
       Meteor.call('setPlayerCursor', ourPlayerId, cursorX, cursorY);
     }
-  }, 1000 / Configuration.player.cursorPerSecond));
+  }, 1000 / Configuration.player.cursorPerSecond);
+  canvas.addEventListener('mousemove', handleCursor);
+  var handleTouch = function (event) {
+    event.preventDefault();
+    event.clientX = 0;
+    event.clientY = 0;
+    for (var i = 0; i < event.touches.length; i++) {
+      event.clientX += event.touches[i].clientX;
+      event.clientY += event.touches[i].clientY;
+    }
+
+    event.clientX /= event.touches.length;
+    event.clientY /= event.touches.length;
+
+    handleCursor(event);
+  }
+  canvas.addEventListener("touchstart", handleTouch);
+  canvas.addEventListener("touchmove", handleTouch);
+
 });
